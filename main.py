@@ -14,6 +14,7 @@ from routes.opencv.lesson10 import lesson10Router
 from routes.opencv.lesson11 import lesson11Router
 from routes.opencv.lesson12 import lesson12Router
 from routes.opencv.lesson13 import lesson13Router
+from routes.opencv.lesson14 import lesson14Router
 
 app = FastAPI()
 
@@ -31,6 +32,7 @@ app.include_router(lesson10Router)
 app.include_router(lesson11Router)
 app.include_router(lesson12Router)
 app.include_router(lesson13Router)
+app.include_router(lesson14Router)
 
 
 @app.get("/")
