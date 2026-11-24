@@ -1,0 +1,101 @@
+---
+description: Computer vision coding rules for this Python, uv, FastAPI, and OpenCV project
+alwaysApply: true
+---
+
+# Computer Vision Coding Rules (1–51)
+
+Project: Python Computer Vision
+Stack: Python, uv, FastAPI, Uvicorn, OpenCV (`import cv2 as cv`)
+Architecture: `main.py` → `routes` → `controllers` → `config`
+Principle: Child-readable code, adult-level production safety.
+
+Write the simplest code a beginner can understand, while keeping the security, correctness, and reliability expected from a professional engineer.
+
+## Project shape
+
+```
+python-CV/
+├── main.py
+├── config/
+│   └── cv_config.py
+├── controllers/
+│   └── cv_controller.py
+├── routes/
+│   └── cv_routes.py
+├── pyproject.toml
+└── uv.lock
+```
+
+Flow: camera or image → OpenCV import → configuration → controller → route → FastAPI response.
+
+`main.py` creates the FastAPI app and registers routes. `routes/cv_routes.py` defines HTTP endpoints. `controllers/cv_controller.py` implements vision operations. `config/cv_config.py` holds `import cv2 as cv` and shared settings.
+
+## Rules
+
+01. SIMPLICITY FIRST. Write code a beginner can read. Choose the simplest solution that is correct, safe, and maintainable.
+02. PRODUCTION QUALITY. This is a learning project. Still write reliable, secure, professional-quality code.
+03. DESCRIPTIVE NAMING. Names for variables, functions, classes, routes, and files must explain their purpose.
+04. NO UNNECESSARY COMPLEXITY. Skip advanced patterns, clever tricks, and extra architecture unless they solve a real problem.
+05. ONE CLEAR RESPONSIBILITY. Each function and file has one job. Split code only when that improves understanding or maintenance.
+06. MINIMUM FILES. Create the fewest files and folders necessary. Do not add files only because larger frameworks use them.
+07. INLINE CODE WHEN APPROPRIATE. Prefer readable in-house functions over extra helper files, wrappers, and abstractions.
+08. PRESERVE PROJECT ARCHITECTURE. Follow `main.py`, `routes`, `controllers`, and `config`. Do not restructure without a clear reason.
+09. SMALLEST SAFE CHANGE. Change only what the current lesson or feature requires. No unrelated refactoring.
+10. PRESERVE WORKING CODE. Do not delete, rename, or rewrite working behavior unless the change is necessary and explained.
+11. COMPLETE COPY-PASTE CODE. When changing a file, provide its full updated contents, exact path, and any commands needed. No unexplained placeholders.
+12. ONE LESSON AT A TIME. Teach and implement one small step. Confirm the current step works before the next.
+13. EXPLAIN BEFORE IMPLEMENTING. Say what is being built, why it is needed, where it belongs, and how it connects.
+14. WHAT / WHY / HOW / IMPORTANT. Document a file when useful: what it does, why it exists, how it connects, and any critical safety or limitation.
+15. MEANINGFUL COMMENTS. Comment important decisions and non-obvious logic. Do not restate simple Python.
+16. CONSISTENT CODING STYLE. Readable indentation and consistent formatting. Use camelCase for our own Python functions and variables. Follow each library's own naming.
+17. REVIEW BEFORE EDITING. Read the relevant files and imports before changing them. Do not assume how an unseen file is written.
+18. MINIMAL DEPENDENCIES. Install only packages that are required. Prefer the standard library and dependencies already in the project.
+19. UV PACKAGE MANAGEMENT. Use `uv` for the environment and dependencies. Prefer `uv add`, `uv run`, and the uv project workflow.
+20. SIMPLE APPLICATION ENTRY POINT. Keep `main.py` small. It creates the FastAPI app, registers routes, and configures only essential startup behavior.
+21. CENTRALIZED CONFIGURATION. Keep the shared OpenCV import and genuinely shared settings in `config/cv_config.py` using `import cv2 as cv`.
+22. ROUTES HANDLE HTTP. Routes define endpoints, request parameters, and response boundaries. Do not put substantial image-processing algorithms in route functions.
+23. CONTROLLERS HANDLE LOGIC. Controllers implement loading, grayscale, resizing, detection, and other image processing.
+24. SERVICES ONLY WHEN NECESSARY. Add services, models, middleware, or extra layers only when a demonstrated requirement justifies them.
+25. REUSE BEFORE REWRITING. Reuse existing functions and configuration. Do not duplicate processing or validation.
+26. BACKEND IS THE SOURCE OF TRUTH. Validate requests and control processing on the backend. Do not trust a value only because a frontend sent it.
+27. VALIDATE ALL INPUTS. Validate parameters, filenames, image formats, file sizes, dimensions, camera identifiers, and other external input before processing.
+28. SAFE IMAGE LOADING. Confirm an image loaded before calling OpenCV. Handle unreadable, empty, and corrupted images.
+29. SAFE FILE AND PATH HANDLING. Use controlled directories and safe filenames. Prevent path traversal, unsafe overwrites, and unauthorized file access.
+30. UNDERSTAND IMAGE DATA. Know width, height, channels, dtype, pixel values, and array shape before transforming or analyzing an image.
+31. EXPLICIT COLOR FORMATS. OpenCV commonly uses BGR. Many other systems use RGB. Convert explicitly when required.
+32. EXPLICIT IMAGE TRANSFORMATIONS. Make grayscale, resize, crop, normalize, rotate, and color conversion clear and traceable.
+33. PRESERVE IMAGE INTEGRITY. Avoid unnecessary quality loss. Use copies when required. Keep original data distinct from processed data.
+34. CONFIGURE IMPORTANT VALUES. Keep camera indexes, image limits, frame dimensions, and model paths in configuration instead of scattering hardcoded values.
+35. MANAGE CAMERA RESOURCES. Open a camera only when needed, verify it initialized, and always release the handle.
+36. HANDLE ERRORS CLEARLY. Use appropriate exception handling. Return understandable errors. Never hide a failure or a programming bug.
+37. HANDLE DISCONNECTIONS. Missing cameras, interrupted streams, unreadable frames, disconnected clients, and missing files must not crash the whole application.
+38. PROTECT FASTAPI RESPONSIVENESS. Do not block the async event loop with heavy camera or image work. Use a suitable synchronous or background path when required.
+39. PERFORMANCE WITHOUT PREMATURE OPTIMIZATION. Correctness and readability come first. Measure speed, memory, and frame rate before optimizing.
+40. CONTROL RESOURCE CONSUMPTION. Limit image sizes, uploads, buffers, workloads, memory, and concurrent operations.
+41. REAL-TIME STREAMING SAFETY. For video, manage frame rate, queues, timestamps, and dropped frames. Do not let an unbounded buffer consume memory.
+42. PRIVACY BY DESIGN. Treat camera footage, recordings, and audio as sensitive. Capture, keep, or share only what is needed and authorized.
+43. EXPLICIT STORAGE BEHAVIOR. Distinguish temporary frames, saved images, recorded videos, and uploads. Do not silently store user media.
+44. AUTHENTICATION AND AUTHORIZATION. Protect camera controls, uploads, recordings, and private endpoints. Enforce access on the backend.
+45. SECURE DEPENDENCIES AND SECRETS. Use maintained libraries, avoid extra dependencies, never commit secrets, and do not expose internal debug details to clients.
+46. USEFUL LOGGING AND OBSERVABILITY. Log meaningful events, durations, errors, and resource failures. Do not log sensitive video, personal information, or secrets.
+47. TEST SUCCESS AND FAILURE PATHS. Cover normal input, missing files, corrupted images, invalid parameters, camera failures, repeated requests, and resource cleanup.
+48. MODULAR AI AND MODEL INTEGRATION. Keep detection, classification, tracking, OCR, and future model integrations replaceable. Do not couple the app to one model or provider.
+49. SAFE AND HONEST AI OUTPUTS. Distinguish predictions from verified facts. Handle uncertainty, confidence, bad detections, and failed inference without inventing observations.
+50. TRACE THE COMPLETE DATA FLOW. Be able to explain camera or image → OpenCV import → configuration → controller → route → FastAPI response. Know where data enters, how it changes, and what the user receives.
+51. NO EXTRA FILES. Do not create unnecessary files, folders, wrappers, helpers, services, or dependencies. Add structure only when it materially improves readability, correctness, security, or maintainability.
+
+## Example
+
+```python
+# config/cv_config.py
+import cv2 as cv
+
+# controllers/cv_controller.py
+from config.cv_config import cv
+
+def toGrayscale(image):
+    if image is None:
+        raise ValueError("Image failed to load")
+    return cv.cvtColor(image, cv.COLOR_BGR2GRAY)
+```
