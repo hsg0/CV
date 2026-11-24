@@ -1,47 +1,206 @@
-.lesson {
-  max-width: 760px;
+.dashboard {
+  max-width: 1120px;
   margin: 0 auto;
-  padding: 24px;
+  padding: 20px 24px 40px;
   text-align: left;
+  box-sizing: border-box;
 }
 
-.controls {
+.header {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
-  align-items: end;
-  margin: 16px 0;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  padding-bottom: 16px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border);
 }
 
-.controls label {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+.header h1 {
+  font-size: 28px;
+  margin: 0 0 6px;
+  letter-spacing: -0.5px;
 }
 
-.controls select,
-.controls button {
-  font: inherit;
-  padding: 8px 12px;
-}
-
-.camera {
-  width: 100%;
-  max-width: 640px;
-  background: #111;
-}
-
-.modes {
+.status-badges {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
 
-.modes button.selected {
-  outline: 2px solid currentColor;
+.badge {
+  font-family: var(--mono);
+  font-size: 13px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--code-bg);
+  color: var(--text-h);
 }
 
-canvas.camera {
+.badge.live {
+  border-color: #22c55e;
+  color: #22c55e;
+}
+
+.badge.idle {
+  opacity: 0.75;
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+@media (max-width: 920px) {
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+}
+
+.stage-card,
+.mode-card,
+.reference-card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  background: var(--bg);
+}
+
+.reference-card {
+  margin-top: 16px;
+}
+
+.controls-column {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.mode-card h2,
+.reference-card h2 {
+  font-size: 17px;
+  margin: 0 0 4px;
+}
+
+.mode-card p,
+.reference-card p {
+  font-size: 14px;
+  margin: 0 0 10px;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-end;
+  margin-bottom: 14px;
+}
+
+.toolbar-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.toolbar-group label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--text-h);
+}
+
+button,
+select {
+  font: inherit;
+  font-size: 14px;
+  padding: 7px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--code-bg);
+  color: var(--text-h);
+  cursor: pointer;
+}
+
+button:hover,
+select:hover {
+  border-color: var(--accent);
+}
+
+.primary-btn {
+  background: #16a34a;
+  border-color: #16a34a;
+  color: #fff;
+  font-weight: 500;
+}
+
+.stop-btn {
+  background: #dc2626;
+  border-color: #dc2626;
+  color: #fff;
+  font-weight: 500;
+}
+
+.modes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.modes button.selected {
+  border-color: #22c55e;
+  outline: 2px solid #22c55e;
+  font-weight: 600;
+}
+
+.video-frame {
+  width: 100%;
+}
+
+.camera {
+  display: block;
+  width: 100%;
+  max-width: 640px;
+  aspect-ratio: 4 / 3;
+  object-fit: contain;
+  background: #0d0e12;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.camera.off {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #e5e7eb;
+  padding: 24px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.camera.off .hint {
+  font-size: 14px;
+  opacity: 0.75;
+  margin-top: 6px;
+}
+
+.selector-canvas {
+  margin-top: 12px;
   cursor: crosshair;
   touch-action: none;
+}
+
+.coords,
+.message {
+  margin-top: 10px !important;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--text-h);
 }

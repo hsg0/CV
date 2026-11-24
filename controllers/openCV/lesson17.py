@@ -30,6 +30,7 @@ minimumArea = 900
 
 # One viewer at a time, so two requests cannot open the same webcam.
 cameraLock = Lock()
+activeCamera = None
 
 # A newer request increments this number and the old stream stops.
 streamVersion = 0
@@ -38,6 +39,7 @@ streamVersion = 0
 MotionMode = Literal["difference", "mog2"]
 
 # background is MOG2. difference compares this frame with the previous frame.
+MotionMethod = Literal["difference", "background"]
 currentMethod = "difference"
 
 # boxes draws rectangles. mask shows the black-and-white motion image.
@@ -176,8 +178,10 @@ def cleanMotionMask(motionMask):
 
 # Keep reading Webcam 0, mark movement, and hand each JPEG to the browser.
 def generateVideoFrames(camera, mode, streamId, view="boxes"):
+    global activeCamera
     previousTime = perf_counter()
     previousGray = None
+    activeCamera = camera
     # history is how many recent frames MOG2 remembers.
     # varThreshold is how different a pixel must be before it counts as motion.
     backgroundModel = openCV.createBackgroundSubtractorMOG2(
@@ -237,13 +241,14 @@ def generateVideoFrames(camera, mode, streamId, view="boxes"):
                 b"\r\n" + imageBytes.tobytes() + b"\r\n"
             )
     finally:
+        activeCamera = None
         camera.release()
         cameraLock.release()
 
 
 # Open the camera and stream the chosen motion view until the browser closes it.
 def streamMotion(mode: MotionMode = "difference", view: ViewMode = "boxes"):
-    global streamVersion
+    global streamVersion, currentMethod, currentView
     streamVersion += 1
     streamId = streamVersion
 
@@ -258,7 +263,6 @@ def streamMotion(mode: MotionMode = "difference", view: ViewMode = "boxes"):
 
     try:
         # The first frame uses the choices from this request. Later button clicks update the same stream.
-        global currentMethod, currentView
         currentMethod = "background" if mode == "mog2" else "difference"
         currentView = view
         camera = openCamera()
@@ -287,6 +291,22 @@ def streamMotionVideo(
 
     chosenMode = "mog2" if method == "background" else "difference"
     return streamMotion(chosenMode, view)
+
+
+# Stop the current stream and wait until Webcam 0 is released.
+def stopMotion():
+    global streamVersion, activeCamera
+    streamVersion += 1
+
+    # Releasing the open camera unblocks a read that is still waiting for a frame.
+    camera = activeCamera
+    if camera is not None:
+        camera.release()
+
+    if cameraLock.acquire(timeout=3):
+        cameraLock.release()
+
+    return {"camera": "released"}
 
 
 # Change the live picture without opening Webcam 0 a second time.

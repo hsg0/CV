@@ -8,7 +8,7 @@
 
 from fastapi import APIRouter
 from fastapi.responses import HTMLResponse
-from controllers.openCV.lesson17 import streamMotionVideo, updateMotionSettings
+from controllers.openCV.lesson17 import stopMotion, streamMotionVideo, updateMotionSettings
 
 lesson17Router = APIRouter()
 
@@ -69,8 +69,9 @@ def watchMotion():
             document.getElementById("background").onclick = () => choose("background", view);
             document.getElementById("boxes").onclick = () => choose(method, "boxes");
             document.getElementById("mask").onclick = () => choose(method, "mask");
-            document.getElementById("start").onclick = () => {
-              if (streaming) return;
+            document.getElementById("start").onclick = async () => {
+              video.removeAttribute("src");
+              await fetch("/lesson17/stop");
               streaming = true;
               status.hidden = true;
               video.hidden = false;
@@ -92,4 +93,5 @@ def watchMotion():
 
 lesson17Router.get("/lesson17")(watchMotion)
 lesson17Router.get("/lesson17/settings")(updateMotionSettings)
+lesson17Router.get("/lesson17/stop")(stopMotion)
 lesson17Router.get("/lesson17/stream")(streamMotionVideo)
