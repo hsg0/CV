@@ -1,0 +1,47 @@
+.lesson {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 24px;
+  text-align: left;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: end;
+  margin: 16px 0;
+}
+
+.controls label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.controls select,
+.controls button {
+  font: inherit;
+  padding: 8px 12px;
+}
+
+.camera {
+  width: 100%;
+  max-width: 640px;
+  background: #111;
+}
+
+.modes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.modes button.selected {
+  outline: 2px solid currentColor;
+}
+
+canvas.camera {
+  cursor: crosshair;
+  touch-action: none;
+}
